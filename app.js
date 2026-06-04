@@ -33,11 +33,13 @@ let viewerMarker;
 let viewerRouteLine;
 let ambientTimer;
 let viewerTimer;
+let ambientPauseTimer;
 
 const tileUrl = "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png";
 const tileAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 const ambientInterval = 4600;
 const viewerInterval = 7800;
+const ambientPauseAfterTouch = 16000;
 
 fetch("photos.json")
   .then((response) => {
@@ -65,6 +67,7 @@ fetch("photos.json")
 
 Object.values(filters).forEach((select) => {
   select.addEventListener("change", () => {
+    pauseAmbientFlow();
     closeViewer();
     renderGallery();
     startAmbientFlow();
@@ -72,6 +75,7 @@ Object.values(filters).forEach((select) => {
 });
 
 clearFiltersButton.addEventListener("click", () => {
+  pauseAmbientFlow();
   Object.values(filters).forEach((select) => {
     select.value = "all";
   });
@@ -83,6 +87,16 @@ clearFiltersButton.addEventListener("click", () => {
 closePanelButton.addEventListener("click", closeViewer);
 prevPhotoButton.addEventListener("click", () => stepViewerPhoto(-1, true));
 nextPhotoButton.addEventListener("click", () => stepViewerPhoto(1, true));
+
+["pointerdown", "touchstart", "wheel"].forEach((eventName) => {
+  gallery.addEventListener(eventName, pauseAmbientFlow, { passive: true });
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (!event.target.closest(".viewer")) {
+    pauseAmbientFlow();
+  }
+}, { passive: true });
 
 document.addEventListener("keydown", (event) => {
   if (!document.body.classList.contains("viewer-active")) {
@@ -168,7 +182,10 @@ function renderGallery() {
         <p>${photo.month} / ${photo.prefecture} / ${photo.genre}</p>
       </span>
     `;
-    card.addEventListener("click", () => openViewer(index));
+    card.addEventListener("click", () => {
+      pauseAmbientFlow();
+      openViewer(index);
+    });
     gallery.appendChild(card);
     photoCards.push(card);
   });
@@ -245,6 +262,21 @@ function stopAmbientFlow() {
   }
 }
 
+function pauseAmbientFlow() {
+  stopAmbientFlow();
+
+  if (ambientPauseTimer) {
+    clearTimeout(ambientPauseTimer);
+  }
+
+  ambientPauseTimer = setTimeout(() => {
+    ambientPauseTimer = null;
+    if (!document.body.classList.contains("viewer-active")) {
+      startAmbientFlow();
+    }
+  }, ambientPauseAfterTouch);
+}
+
 function updateAmbient(index, shouldPeek) {
   const photo = visiblePhotos[index];
 
@@ -267,7 +299,7 @@ function updateAmbient(index, shouldPeek) {
 
   moveMap(ambientMap, ambientMarker, photo, 11, 1);
 
-  if (shouldPeek && photoCards[index]) {
+  if (shouldPeek && photoCards[index] && !isCompactScreen()) {
     photoCards[index].scrollIntoView({
       behavior: "smooth",
       block: "nearest",
@@ -390,4 +422,8 @@ function hasCoordinates(photo) {
 
 function getThumbSrc(photo) {
   return photo.thumb || photo.src.replace("assets/photos/", "assets/photos/thumbs/");
+}
+
+function isCompactScreen() {
+  return window.matchMedia("(max-width: 760px)").matches;
 }

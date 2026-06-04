@@ -185,6 +185,7 @@ h1 {
   transition: opacity 360ms ease, transform 520ms ease, filter 520ms ease;
   content-visibility: auto;
   contain-intrinsic-size: 420px 560px;
+  touch-action: manipulation;
 }
 
 .photo-card::after {
@@ -505,7 +506,7 @@ h1 {
   }
 
   .ambient-panel {
-    order: -1;
+    order: 2;
     position: relative;
     top: auto;
     min-height: 0;
@@ -536,8 +537,74 @@ h1 {
 
 @media (max-width: 760px) {
   .site-header {
-    padding-top: 30px;
-    gap: 24px;
+    padding: 24px 14px 16px;
+    gap: 18px;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+
+  .lead {
+    margin-top: 12px;
+    font-size: 13px;
+  }
+
+  .page-shell {
+    gap: 22px;
+    padding: 0 14px 32px;
+  }
+
+  .section-head {
+    margin-bottom: 12px;
+    padding-top: 12px;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    column-count: auto;
+  }
+
+  .photo-card {
+    display: block;
+    margin: 0;
+    overflow: visible;
+    contain-intrinsic-size: 92px 92px;
+  }
+
+  .photo-card::after {
+    inset: -3px;
+    border-radius: 6px;
+  }
+
+  .photo-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 8px 18px rgba(30, 27, 23, 0.12);
+  }
+
+  .photo-card:hover img,
+  .photo-card:focus-visible img {
+    transform: none;
+  }
+
+  .photo-card.is-featured {
+    transform: scale(1.04);
+  }
+
+  .photo-card.is-featured::after {
+    border-color: rgba(29, 95, 89, 0.36);
+    background: rgba(255, 252, 246, 0.5);
+    box-shadow: 0 10px 26px rgba(36, 31, 24, 0.16);
+  }
+
+  .card-caption {
+    display: none;
   }
 
   .viewer {
@@ -550,32 +617,34 @@ h1 {
 
   .ambient-panel {
     gap: 12px;
+    padding-top: 16px;
   }
 
   .ambient-copy h2 {
-    font-size: 28px;
+    font-size: 24px;
+  }
+
+  .ambient-photo-wrap {
+    display: none;
+  }
+
+  .ambient-map-card {
+    min-height: 170px;
   }
 }
 
 @media (max-width: 520px) {
   .filter-bar {
-    grid-template-columns: 1fr;
-  }
-
-  .photo-grid {
-    column-count: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .photo-card {
-    margin-bottom: 26px;
+    margin-bottom: 0;
   }
 
   .photo-card.is-featured {
-    transform: scale(1.015);
-  }
-
-  .ambient-photo-wrap {
-    aspect-ratio: 16 / 10;
+    transform: scale(1.04);
   }
 
   .page-shell {
