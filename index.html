@@ -62,7 +62,7 @@
           <h2 id="ambientTitle">写真を読み込み中</h2>
         </div>
         <div class="ambient-map-card">
-          <div id="ambientMap" aria-label="連動する撮影地点の地図"></div>
+          <div id="ambientMap" aria-label="撮影地点から選べる地図"></div>
         </div>
       </aside>
     </main>
@@ -78,16 +78,16 @@
         <article class="viewer-info">
           <p id="detailMeta" class="detail-meta"></p>
           <h2 id="detailTitle">写真を選択</h2>
-          <p id="detailDescription">タイルをクリックすると、大きな写真と撮影地点のミニマップが表示されます。</p>
+          <p id="detailDescription">写真や地図の光る点を選ぶと、大きな写真と撮影地点が表示されます。</p>
         </article>
+
+        <div class="map-card">
+          <div id="viewerMap" aria-label="撮影地点から選べる地図"></div>
+        </div>
 
         <div class="viewer-controls" aria-label="写真送り">
           <button id="prevPhoto" type="button">前へ</button>
           <button id="nextPhoto" type="button">次へ</button>
-        </div>
-
-        <div class="map-card">
-          <div id="viewerMap" aria-label="撮影地点の地図"></div>
         </div>
       </div>
     </section>

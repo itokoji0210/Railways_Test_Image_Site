@@ -26,11 +26,11 @@ let photoCards = [];
 let ambientIndex = 0;
 let viewerIndex = 0;
 let ambientMap;
-let ambientMarker;
 let ambientRouteLine;
+let ambientMarkers = [];
 let viewerMap;
-let viewerMarker;
 let viewerRouteLine;
+let viewerMarkers = [];
 let ambientTimer;
 let viewerTimer;
 let ambientPauseTimer;
@@ -209,9 +209,7 @@ function initMaps() {
   }
 
   ambientMap = createMap("ambientMap", first, 10);
-  ambientMarker = createMarker(first).addTo(ambientMap);
   viewerMap = createMap("viewerMap", first, 11);
-  viewerMarker = createMarker(first).addTo(viewerMap);
 }
 
 function createMap(elementId, first, zoom) {
@@ -229,15 +227,24 @@ function createMap(elementId, first, zoom) {
   return createdMap;
 }
 
-function createMarker(photo) {
-  return L.marker([photo.lat, photo.lng], {
+function createPhotoMarker(photo, index, isActive, onSelect) {
+  const marker = L.marker([photo.lat, photo.lng], {
     icon: L.divIcon({
       className: "",
-      html: '<div class="map-dot"></div>',
-      iconSize: [15, 15],
-      iconAnchor: [7, 7]
+      html: `<div class="map-dot${isActive ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
     })
   });
+
+  marker.on("click", () => onSelect(index));
+  marker.bindTooltip(photo.title, {
+    direction: "top",
+    opacity: 0.88,
+    offset: [0, -10]
+  });
+
+  return marker;
 }
 
 function startAmbientFlow() {
@@ -297,7 +304,8 @@ function updateAmbient(index, shouldPeek) {
     ambientImage.classList.add("is-flowing");
   });
 
-  moveMap(ambientMap, ambientMarker, photo, 11, 1);
+  setActiveMarkers(ambientMarkers, index);
+  moveMap(ambientMap, photo, 11, 1);
 
   if (shouldPeek && photoCards[index] && !isCompactScreen()) {
     photoCards[index].scrollIntoView({
@@ -376,12 +384,24 @@ function updateViewer(index) {
     detailImage.classList.add("is-flowing");
   });
 
-  moveMap(viewerMap, viewerMarker, photo, 12, 1.1);
+  setActiveMarkers(viewerMarkers, index);
+  moveMap(viewerMap, photo, 12, 1.1);
 }
 
 function updateRoutes(routePhotos) {
   ambientRouteLine = updateRouteLine(ambientMap, ambientRouteLine, routePhotos);
   viewerRouteLine = updateRouteLine(viewerMap, viewerRouteLine, routePhotos);
+  ambientMarkers = updateMapMarkers(ambientMap, ambientMarkers, routePhotos, ambientIndex, (index) => {
+    pauseAmbientFlow();
+    ambientIndex = index;
+    updateAmbient(index, false);
+    openViewer(index);
+  });
+  viewerMarkers = updateMapMarkers(viewerMap, viewerMarkers, routePhotos, viewerIndex, (index) => {
+    stopViewerFlow();
+    viewerIndex = index;
+    updateViewer(index);
+  });
 }
 
 function updateRouteLine(targetMap, currentLine, routePhotos) {
@@ -406,12 +426,34 @@ function updateRouteLine(targetMap, currentLine, routePhotos) {
   }).addTo(targetMap);
 }
 
-function moveMap(targetMap, targetMarker, photo, zoom, duration) {
-  if (!targetMap || !targetMarker || !hasCoordinates(photo)) {
+function updateMapMarkers(targetMap, currentMarkers, routePhotos, activeIndex, onSelect) {
+  if (!targetMap) {
+    return currentMarkers;
+  }
+
+  currentMarkers.forEach((marker) => targetMap.removeLayer(marker));
+
+  return routePhotos.map((photo, index) => {
+    return createPhotoMarker(photo, index, index === activeIndex, onSelect).addTo(targetMap);
+  });
+}
+
+function setActiveMarkers(markers, activeIndex) {
+  markers.forEach((marker, index) => {
+    marker.setIcon(L.divIcon({
+      className: "",
+      html: `<div class="map-dot${index === activeIndex ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    }));
+  });
+}
+
+function moveMap(targetMap, photo, zoom, duration) {
+  if (!targetMap || !hasCoordinates(photo)) {
     return;
   }
 
-  targetMarker.setLatLng([photo.lat, photo.lng]);
   targetMap.flyTo([photo.lat, photo.lng], zoom, { duration });
   setTimeout(() => targetMap.invalidateSize(), 160);
 }
