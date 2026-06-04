@@ -489,6 +489,47 @@ h1 {
   cursor: pointer;
 }
 
+.photo-marker-icon {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.map-firefly {
+  display: block;
+  width: 34px;
+  height: 34px;
+  overflow: visible;
+  animation: firefly-pulse 2400ms ease-in-out infinite;
+  animation-delay: calc(var(--dot-index, 0) * -130ms);
+}
+
+.map-firefly .firefly-outer,
+.map-firefly .firefly-middle,
+.map-firefly .firefly-core,
+.map-firefly .firefly-spark {
+  transform-origin: 17px 17px;
+}
+
+.map-firefly .firefly-outer {
+  filter: drop-shadow(0 0 10px rgba(18, 201, 189, 0.82));
+}
+
+.map-firefly .firefly-core {
+  filter: drop-shadow(0 0 9px rgba(18, 201, 189, 0.96));
+}
+
+.map-firefly.is-active {
+  animation: active-firefly 1800ms ease-in-out infinite;
+}
+
+.map-firefly.is-active .firefly-outer {
+  filter: drop-shadow(0 0 12px rgba(52, 233, 90, 0.9));
+}
+
+.map-firefly.is-active .firefly-core {
+  filter: drop-shadow(0 0 12px rgba(52, 233, 90, 1));
+}
+
 .leaflet-control-attribution,
 .leaflet-control-zoom {
   opacity: 0.72;

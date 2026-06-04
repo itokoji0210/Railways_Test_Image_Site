@@ -234,10 +234,10 @@ function createMap(elementId, first, zoom) {
 function createPhotoMarker(photo, index, isActive, onSelect) {
   const marker = L.marker([photo.lat, photo.lng], {
     icon: L.divIcon({
-      className: "",
-      html: `<div class="map-dot${isActive ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14]
+      className: "photo-marker-icon",
+      html: getFireflySvg(isActive, index),
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
     })
   });
 
@@ -492,10 +492,10 @@ function updateMapMarkers(targetMap, currentMarkers, routePhotos, activeIndex, o
 function setActiveMarkers(markers, activeIndex) {
   markers.forEach((marker, index) => {
     marker.setIcon(L.divIcon({
-      className: "",
-      html: `<div class="map-dot${index === activeIndex ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
-      iconSize: [28, 28],
-      iconAnchor: [14, 14]
+      className: "photo-marker-icon",
+      html: getFireflySvg(index === activeIndex, index),
+      iconSize: [34, 34],
+      iconAnchor: [17, 17]
     }));
   });
 }
@@ -554,4 +554,29 @@ function preloadNeighborPhotos(index) {
     const image = new Image();
     image.src = photo.src;
   });
+}
+
+function getFireflySvg(isActive, index) {
+  const colors = isActive
+    ? {
+      outer: "rgba(74, 255, 99, 0.26)",
+      middle: "rgba(40, 220, 76, 0.66)",
+      core: "#34e95a",
+      spark: "#b9ff9e"
+    }
+    : {
+      outer: "rgba(30, 231, 218, 0.26)",
+      middle: "rgba(20, 190, 181, 0.66)",
+      core: "#12c9bd",
+      spark: "#9ffff5"
+    };
+
+  return `
+    <svg class="map-firefly${isActive ? " is-active" : ""}" style="--dot-index:${index}" viewBox="0 0 34 34" aria-hidden="true" focusable="false">
+      <circle class="firefly-outer" cx="17" cy="17" r="15" fill="${colors.outer}"></circle>
+      <circle class="firefly-middle" cx="17" cy="17" r="9" fill="${colors.middle}"></circle>
+      <circle class="firefly-core" cx="17" cy="17" r="5.5" fill="${colors.core}"></circle>
+      <circle class="firefly-spark" cx="17" cy="17" r="2.4" fill="${colors.spark}"></circle>
+    </svg>
+  `;
 }
