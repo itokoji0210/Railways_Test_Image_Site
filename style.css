@@ -495,39 +495,64 @@ h1 {
 }
 
 .map-firefly {
+  position: relative;
   display: block;
-  width: 34px;
-  height: 34px;
-  overflow: visible;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
   animation: firefly-pulse 2400ms ease-in-out infinite;
   animation-delay: calc(var(--dot-index, 0) * -130ms);
 }
 
-.map-firefly .firefly-outer,
-.map-firefly .firefly-middle,
-.map-firefly .firefly-core,
-.map-firefly .firefly-spark {
-  transform-origin: 17px 17px;
+.firefly-halo,
+.firefly-core,
+.firefly-spark {
+  position: absolute;
+  border-radius: inherit;
+  pointer-events: none;
 }
 
-.map-firefly .firefly-outer {
-  filter: drop-shadow(0 0 10px rgba(18, 201, 189, 0.82));
+.firefly-halo {
+  inset: 1px;
+  background: radial-gradient(circle, rgba(27, 226, 213, 0.44), rgba(27, 226, 213, 0.18) 42%, rgba(27, 226, 213, 0) 70%);
+  box-shadow: 0 0 18px rgba(27, 226, 213, 0.72);
 }
 
-.map-firefly .firefly-core {
-  filter: drop-shadow(0 0 9px rgba(18, 201, 189, 0.96));
+.firefly-core {
+  inset: 10px;
+  background: #10cfc2;
+  box-shadow:
+    0 0 0 3px rgba(16, 207, 194, 0.24),
+    0 0 12px rgba(16, 207, 194, 0.98),
+    0 0 22px rgba(16, 207, 194, 0.62);
+}
+
+.firefly-spark {
+  inset: 15px;
+  background: #12a99f;
+  box-shadow: 0 0 9px rgba(16, 207, 194, 1);
 }
 
 .map-firefly.is-active {
   animation: active-firefly 1800ms ease-in-out infinite;
 }
 
-.map-firefly.is-active .firefly-outer {
-  filter: drop-shadow(0 0 12px rgba(52, 233, 90, 0.9));
+.map-firefly.is-active .firefly-halo {
+  background: radial-gradient(circle, rgba(74, 239, 83, 0.52), rgba(74, 239, 83, 0.22) 44%, rgba(74, 239, 83, 0) 72%);
+  box-shadow: 0 0 22px rgba(74, 239, 83, 0.82);
 }
 
 .map-firefly.is-active .firefly-core {
-  filter: drop-shadow(0 0 12px rgba(52, 233, 90, 1));
+  background: #35e85c;
+  box-shadow:
+    0 0 0 4px rgba(53, 232, 92, 0.26),
+    0 0 14px rgba(53, 232, 92, 1),
+    0 0 26px rgba(53, 232, 92, 0.7);
+}
+
+.map-firefly.is-active .firefly-spark {
+  background: #199d35;
+  box-shadow: 0 0 10px rgba(53, 232, 92, 1);
 }
 
 .leaflet-control-attribution,
@@ -679,11 +704,11 @@ h1 {
   }
 
   .ambient-panel {
-    order: -1;
+    order: 2;
     position: relative;
     top: auto;
     min-height: 0;
-    grid-template-rows: auto minmax(150px, 22vh);
+    grid-template-rows: auto minmax(118px, 18vh);
     gap: 10px;
     padding: 12px 0 2px;
     border-top: 1px solid var(--line);
@@ -806,28 +831,28 @@ h1 {
 
   .viewer {
     padding: 12px;
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 50vh) auto;
   }
 
   .viewer-photo-stage {
-    order: 2;
+    order: 1;
     border-radius: 5px;
   }
 
   .viewer-photo {
-    min-height: 46vh;
+    min-height: 50vh;
   }
 
   .viewer-side {
-    order: 1;
+    order: 2;
     display: grid;
     grid-template-areas:
-      "back"
-      "map"
       "info"
+      "map"
       "rail"
-      "controls";
-    grid-template-rows: auto minmax(145px, 21vh) auto auto auto;
+      "controls"
+      "back";
+    grid-template-rows: auto minmax(126px, 18vh) auto auto auto;
     gap: 10px;
   }
 
@@ -842,7 +867,7 @@ h1 {
 
   .map-card {
     grid-area: map;
-    min-height: 150px;
+    min-height: 126px;
   }
 
   .viewer-rail {
@@ -873,14 +898,6 @@ h1 {
   .ambient-panel {
     gap: 8px;
     padding-top: 10px;
-    position: sticky;
-    top: 0;
-    z-index: 8;
-    margin: 0 -14px;
-    padding-right: 14px;
-    padding-left: 14px;
-    background: rgba(247, 244, 238, 0.94);
-    backdrop-filter: blur(8px);
   }
 
   .ambient-copy h2 {
@@ -900,7 +917,7 @@ h1 {
   }
 
   .ambient-map-card {
-    min-height: 136px;
+    min-height: 118px;
   }
 
   .viewer-rail {
@@ -931,10 +948,10 @@ h1 {
   }
 
   .viewer {
-    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 48vh) auto;
   }
 
   .viewer-photo {
-    min-height: 44vh;
+    min-height: 48vh;
   }
 }
