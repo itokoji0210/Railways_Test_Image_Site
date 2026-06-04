@@ -12,6 +12,7 @@ const detailImage = document.querySelector("#detailImage");
 const detailTitle = document.querySelector("#detailTitle");
 const detailMeta = document.querySelector("#detailMeta");
 const detailDescription = document.querySelector("#detailDescription");
+const viewerRail = document.querySelector("#viewerRail");
 
 const filters = {
   month: document.querySelector("#monthFilter"),
@@ -23,6 +24,7 @@ const filters = {
 let photos = [];
 let visiblePhotos = [];
 let photoCards = [];
+let railButtons = [];
 let ambientIndex = 0;
 let viewerIndex = 0;
 let ambientMap;
@@ -174,6 +176,7 @@ function renderGallery() {
     const card = document.createElement("button");
     card.className = "photo-card";
     card.type = "button";
+    card.setAttribute("aria-label", `${photo.title}を大きく表示`);
     card.style.setProperty("--delay", `${index * 90}ms`);
     card.innerHTML = `
       <img src="${getThumbSrc(photo)}" alt="${photo.title}" loading="${index < 4 ? "eager" : "lazy"}" decoding="async">
@@ -193,6 +196,7 @@ function renderGallery() {
   ambientIndex = Math.min(ambientIndex, visiblePhotos.length - 1);
   viewerIndex = Math.min(viewerIndex, visiblePhotos.length - 1);
   updateRoutes(visiblePhotos);
+  renderViewerRail();
   updateAmbient(ambientIndex, false);
 }
 
@@ -291,8 +295,12 @@ function updateAmbient(index, shouldPeek) {
     return;
   }
 
-  photoCards.forEach((card) => card.classList.remove("is-featured"));
+  photoCards.forEach((card) => {
+    card.classList.remove("is-featured");
+    card.removeAttribute("aria-current");
+  });
   photoCards[index]?.classList.add("is-featured");
+  photoCards[index]?.setAttribute("aria-current", "true");
 
   ambientImage.classList.remove("is-flowing");
   ambientImage.src = getThumbSrc(photo);
@@ -305,6 +313,8 @@ function updateAmbient(index, shouldPeek) {
   });
 
   setActiveMarkers(ambientMarkers, index);
+  setActiveRail(index);
+  preloadNeighborPhotos(index);
   if (isCompactScreen()) {
     setTimeout(() => ambientMap?.invalidateSize(), 160);
   } else {
@@ -389,7 +399,42 @@ function updateViewer(index) {
   });
 
   setActiveMarkers(viewerMarkers, index);
+  setActiveRail(index);
+  preloadNeighborPhotos(index);
   moveMap(viewerMap, photo, 12, 1.1);
+}
+
+function renderViewerRail() {
+  viewerRail.innerHTML = "";
+  railButtons = [];
+
+  visiblePhotos.forEach((photo, index) => {
+    const button = document.createElement("button");
+    button.className = "rail-thumb";
+    button.type = "button";
+    button.setAttribute("aria-label", `${photo.title}を表示`);
+    button.innerHTML = `<img src="${getThumbSrc(photo)}" alt="" loading="lazy" decoding="async">`;
+    button.addEventListener("click", () => {
+      stopViewerFlow();
+      viewerIndex = index;
+      updateViewer(index);
+    });
+    viewerRail.appendChild(button);
+    railButtons.push(button);
+  });
+
+  setActiveRail(viewerIndex);
+}
+
+function setActiveRail(activeIndex) {
+  railButtons.forEach((button, index) => {
+    button.classList.toggle("is-active", index === activeIndex);
+    if (index === activeIndex) {
+      button.setAttribute("aria-current", "true");
+    } else {
+      button.removeAttribute("aria-current");
+    }
+  });
 }
 
 function updateRoutes(routePhotos) {
@@ -492,4 +537,21 @@ function getThumbSrc(photo) {
 
 function isCompactScreen() {
   return window.matchMedia("(max-width: 760px)").matches;
+}
+
+function preloadNeighborPhotos(index) {
+  if (visiblePhotos.length < 2) {
+    return;
+  }
+
+  [index, index + 1, index - 1].forEach((rawIndex) => {
+    const safeIndex = (rawIndex + visiblePhotos.length) % visiblePhotos.length;
+    const photo = visiblePhotos[safeIndex];
+    if (!photo) {
+      return;
+    }
+
+    const image = new Image();
+    image.src = photo.src;
+  });
 }
