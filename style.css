@@ -451,6 +451,10 @@ h1 {
   line-height: 1.02;
 }
 
+.info-toggle {
+  display: none;
+}
+
 .viewer-info p {
   line-height: 1.75;
 }
@@ -831,16 +835,18 @@ h1 {
 
   .viewer {
     padding: 12px;
-    grid-template-rows: minmax(0, 50vh) auto;
+    grid-template-rows: minmax(0, 68vh) auto;
+    gap: 10px;
   }
 
   .viewer-photo-stage {
     order: 1;
     border-radius: 5px;
+    box-shadow: 0 18px 48px rgba(31, 27, 22, 0.28);
   }
 
   .viewer-photo {
-    min-height: 50vh;
+    min-height: 68vh;
   }
 
   .viewer-side {
@@ -852,8 +858,8 @@ h1 {
       "rail"
       "controls"
       "back";
-    grid-template-rows: auto minmax(126px, 18vh) auto auto auto;
-    gap: 10px;
+    grid-template-rows: auto 92px auto auto auto;
+    gap: 8px;
   }
 
   .back-button {
@@ -867,7 +873,8 @@ h1 {
 
   .map-card {
     grid-area: map;
-    min-height: 126px;
+    min-height: 92px;
+    box-shadow: 0 10px 24px rgba(36, 31, 24, 0.1);
   }
 
   .viewer-rail {
@@ -879,20 +886,60 @@ h1 {
   }
 
   .viewer-info h2 {
-    font-size: 24px;
+    margin-bottom: 0;
+    font-size: 21px;
+    line-height: 1;
   }
 
   .viewer-info {
-    padding: 12px;
+    padding: 10px 12px;
+    box-shadow: 0 8px 22px rgba(36, 31, 24, 0.09);
   }
 
   #detailDescription {
-    display: none;
+    display: block;
+    max-height: 0;
+    margin-top: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 180ms ease, opacity 180ms ease, margin-top 180ms ease;
+  }
+
+  .viewer.info-open #detailDescription {
+    max-height: 9em;
+    margin-top: 10px;
+    opacity: 1;
+  }
+
+  .info-toggle {
+    display: inline-grid;
+    place-items: center;
+    min-height: 30px;
+    margin-top: 8px;
+    padding: 0 12px;
+    border: 1px solid rgba(222, 216, 205, 0.95);
+    border-radius: 999px;
+    background: rgba(255, 252, 246, 0.86);
+    color: var(--accent);
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .viewer.info-open .info-toggle {
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
   .viewer-info .detail-meta {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     font-size: 11px;
+  }
+
+  .viewer-controls button,
+  .back-button {
+    min-height: 38px;
+    font-size: 13px;
   }
 
   .ambient-panel {
@@ -921,11 +968,13 @@ h1 {
   }
 
   .viewer-rail {
-    grid-auto-columns: 54px;
+    grid-auto-columns: 46px;
+    gap: 6px;
+    padding-bottom: 4px;
   }
 
   .rail-thumb {
-    height: 56px;
+    height: 46px;
   }
 }
 
@@ -948,10 +997,10 @@ h1 {
   }
 
   .viewer {
-    grid-template-rows: minmax(0, 48vh) auto;
+    grid-template-rows: minmax(0, 66vh) auto;
   }
 
   .viewer-photo {
-    min-height: 48vh;
+    min-height: 66vh;
   }
 }

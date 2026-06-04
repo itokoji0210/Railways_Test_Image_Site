@@ -13,6 +13,7 @@ const detailTitle = document.querySelector("#detailTitle");
 const detailMeta = document.querySelector("#detailMeta");
 const detailDescription = document.querySelector("#detailDescription");
 const viewerRail = document.querySelector("#viewerRail");
+const toggleInfoButton = document.querySelector("#toggleInfo");
 
 const filters = {
   month: document.querySelector("#monthFilter"),
@@ -89,6 +90,10 @@ clearFiltersButton.addEventListener("click", () => {
 closePanelButton.addEventListener("click", closeViewer);
 prevPhotoButton.addEventListener("click", () => stepViewerPhoto(-1, true));
 nextPhotoButton.addEventListener("click", () => stepViewerPhoto(1, true));
+toggleInfoButton.addEventListener("click", () => {
+  const isOpen = viewer.classList.toggle("info-open");
+  toggleInfoButton.setAttribute("aria-expanded", String(isOpen));
+});
 
 ["pointerdown", "touchstart", "wheel"].forEach((eventName) => {
   gallery.addEventListener(eventName, pauseAmbientFlow, { passive: true });
@@ -335,6 +340,8 @@ function openViewer(index) {
   document.body.classList.add("viewer-active");
   viewer.setAttribute("aria-hidden", "false");
   viewer.inert = false;
+  viewer.classList.remove("info-open");
+  toggleInfoButton.setAttribute("aria-expanded", "false");
   stopAmbientFlow();
   updateViewer(viewerIndex);
   startViewerFlow();
