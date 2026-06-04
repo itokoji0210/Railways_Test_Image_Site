@@ -236,8 +236,8 @@ function createPhotoMarker(photo, index, isActive, onSelect) {
     icon: L.divIcon({
       className: "",
       html: `<div class="map-dot${isActive ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12]
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
     })
   });
 
@@ -494,8 +494,8 @@ function setActiveMarkers(markers, activeIndex) {
     marker.setIcon(L.divIcon({
       className: "",
       html: `<div class="map-dot${index === activeIndex ? " is-active" : ""}" style="--dot-index:${index}"></div>`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12]
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
     }));
   });
 }

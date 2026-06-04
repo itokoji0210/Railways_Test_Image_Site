@@ -320,6 +320,10 @@ h1 {
   height: 100%;
   min-height: 220px;
   background: #eee9df;
+}
+
+#ambientMap .leaflet-tile,
+#viewerMap .leaflet-tile {
   filter: grayscale(1) contrast(0.9) brightness(1.04);
 }
 
@@ -478,7 +482,10 @@ h1 {
   font: inherit;
 }
 
-.leaflet-marker-icon {
+.leaflet-marker-icon,
+.leaflet-div-icon {
+  border: 0 !important;
+  background: transparent !important;
   cursor: pointer;
 }
 
@@ -489,12 +496,16 @@ h1 {
 
 .map-dot {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 48% 48%, rgba(223, 255, 248, 1) 0 13%, rgba(82, 210, 201, 0.95) 14% 30%, rgba(12, 129, 129, 0.76) 31% 44%, rgba(12, 129, 129, 0) 66%);
-  filter: drop-shadow(0 0 8px rgba(64, 201, 195, 0.72));
+    radial-gradient(circle at 50% 50%, #26f6de 0 24%, #16bdb4 25% 48%, rgba(22, 189, 180, 0.48) 49% 66%, rgba(22, 189, 180, 0) 76%);
+  box-shadow:
+    0 0 8px rgba(38, 246, 222, 0.95),
+    0 0 18px rgba(22, 189, 180, 0.62),
+    0 0 30px rgba(22, 189, 180, 0.32);
+  filter: none;
   animation: firefly-pulse 2400ms ease-in-out infinite;
   animation-delay: calc(var(--dot-index, 0) * -130ms);
   transition: transform 220ms ease, filter 220ms ease;
@@ -510,32 +521,36 @@ h1 {
 }
 
 .map-dot::before {
-  background: radial-gradient(circle, rgba(99, 225, 213, 0.62), rgba(12, 129, 129, 0) 64%);
-  transform: scale(1.8);
-  opacity: 0.58;
+  background: radial-gradient(circle, rgba(41, 227, 212, 0.6), rgba(22, 189, 180, 0) 68%);
+  transform: scale(2.05);
+  opacity: 0.72;
 }
 
 .map-dot::after {
   inset: 9px;
-  background: #dffff8;
-  box-shadow: 0 0 10px rgba(120, 245, 230, 0.95);
+  background: #03a99f;
+  box-shadow: 0 0 10px rgba(38, 246, 222, 0.95);
 }
 
 .map-dot.is-active {
   animation: active-firefly 1800ms ease-in-out infinite;
   background:
-    radial-gradient(circle at 48% 48%, rgba(235, 255, 217, 1) 0 13%, rgba(76, 218, 96, 0.98) 14% 31%, rgba(23, 142, 67, 0.86) 32% 47%, rgba(23, 142, 67, 0) 68%);
+    radial-gradient(circle at 50% 50%, #79ff70 0 20%, #25d84f 21% 44%, rgba(37, 216, 79, 0.48) 45% 64%, rgba(37, 216, 79, 0) 76%);
   transform: scale(1.35);
-  filter: drop-shadow(0 0 14px rgba(95, 245, 116, 0.95)) drop-shadow(0 0 22px rgba(28, 176, 91, 0.65));
+  box-shadow:
+    0 0 10px rgba(121, 255, 112, 1),
+    0 0 22px rgba(37, 216, 79, 0.8),
+    0 0 38px rgba(37, 216, 79, 0.44);
+  filter: none;
 }
 
 .map-dot.is-active::before {
-  background: radial-gradient(circle, rgba(93, 244, 120, 0.76), rgba(23, 142, 67, 0) 66%);
+  background: radial-gradient(circle, rgba(121, 255, 112, 0.72), rgba(37, 216, 79, 0) 70%);
 }
 
 .map-dot.is-active::after {
-  background: #efffdf;
-  box-shadow: 0 0 12px rgba(210, 255, 186, 1);
+  background: #16b834;
+  box-shadow: 0 0 12px rgba(121, 255, 112, 1);
 }
 
 .empty-state {
@@ -750,23 +765,68 @@ h1 {
 
   .viewer {
     padding: 12px;
-    grid-template-rows: minmax(0, 40vh) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .viewer-photo-stage {
+    order: 2;
     border-radius: 5px;
   }
 
   .viewer-photo {
-    min-height: 40vh;
+    min-height: 46vh;
   }
 
-  .viewer-info h2 {
-    font-size: 28px;
+  .viewer-side {
+    order: 1;
+    display: grid;
+    grid-template-areas:
+      "back"
+      "map"
+      "info"
+      "rail"
+      "controls";
+    grid-template-rows: auto minmax(145px, 21vh) auto auto auto;
+    gap: 10px;
+  }
+
+  .back-button {
+    grid-area: back;
+    justify-self: start;
   }
 
   .viewer-info {
-    padding: 14px;
+    grid-area: info;
+  }
+
+  .map-card {
+    grid-area: map;
+    min-height: 150px;
+  }
+
+  .viewer-rail {
+    grid-area: rail;
+  }
+
+  .viewer-controls {
+    grid-area: controls;
+  }
+
+  .viewer-info h2 {
+    font-size: 24px;
+  }
+
+  .viewer-info {
+    padding: 12px;
+  }
+
+  #detailDescription {
+    display: none;
+  }
+
+  .viewer-info .detail-meta {
+    margin-bottom: 6px;
+    font-size: 11px;
   }
 
   .ambient-panel {
@@ -830,10 +890,10 @@ h1 {
   }
 
   .viewer {
-    grid-template-rows: minmax(0, 38vh) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
   }
 
   .viewer-photo {
-    min-height: 38vh;
+    min-height: 44vh;
   }
 }
