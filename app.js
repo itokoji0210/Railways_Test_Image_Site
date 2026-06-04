@@ -305,7 +305,11 @@ function updateAmbient(index, shouldPeek) {
   });
 
   setActiveMarkers(ambientMarkers, index);
-  moveMap(ambientMap, photo, 11, 1);
+  if (isCompactScreen()) {
+    setTimeout(() => ambientMap?.invalidateSize(), 160);
+  } else {
+    moveMap(ambientMap, photo, 10, 1);
+  }
 
   if (shouldPeek && photoCards[index] && !isCompactScreen()) {
     photoCards[index].scrollIntoView({
@@ -402,6 +406,8 @@ function updateRoutes(routePhotos) {
     viewerIndex = index;
     updateViewer(index);
   });
+
+  fitMapToPhotos(ambientMap, routePhotos);
 }
 
 function updateRouteLine(targetMap, currentLine, routePhotos) {
@@ -456,6 +462,24 @@ function moveMap(targetMap, photo, zoom, duration) {
 
   targetMap.flyTo([photo.lat, photo.lng], zoom, { duration });
   setTimeout(() => targetMap.invalidateSize(), 160);
+}
+
+function fitMapToPhotos(targetMap, routePhotos) {
+  const points = routePhotos.filter(hasCoordinates).map((photo) => [photo.lat, photo.lng]);
+
+  if (!targetMap || points.length === 0) {
+    return;
+  }
+
+  if (points.length === 1) {
+    targetMap.setView(points[0], 11);
+    return;
+  }
+
+  targetMap.fitBounds(points, {
+    padding: [24, 24],
+    maxZoom: 10
+  });
 }
 
 function hasCoordinates(photo) {

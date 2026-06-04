@@ -434,6 +434,10 @@ h1 {
   font: inherit;
 }
 
+.leaflet-marker-icon {
+  cursor: pointer;
+}
+
 .leaflet-control-attribution,
 .leaflet-control-zoom {
   opacity: 0.72;
@@ -445,8 +449,8 @@ h1 {
   height: 24px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 48% 48%, rgba(255, 250, 207, 1) 0 13%, rgba(123, 224, 181, 0.92) 14% 28%, rgba(29, 95, 89, 0.78) 29% 42%, rgba(29, 95, 89, 0) 63%);
-  filter: drop-shadow(0 0 8px rgba(83, 214, 154, 0.72));
+    radial-gradient(circle at 48% 48%, rgba(223, 255, 248, 1) 0 13%, rgba(82, 210, 201, 0.95) 14% 30%, rgba(12, 129, 129, 0.76) 31% 44%, rgba(12, 129, 129, 0) 66%);
+  filter: drop-shadow(0 0 8px rgba(64, 201, 195, 0.72));
   animation: firefly-pulse 2400ms ease-in-out infinite;
   animation-delay: calc(var(--dot-index, 0) * -130ms);
   transition: transform 220ms ease, filter 220ms ease;
@@ -462,21 +466,32 @@ h1 {
 }
 
 .map-dot::before {
-  background: radial-gradient(circle, rgba(255, 238, 161, 0.72), rgba(168, 93, 53, 0) 62%);
+  background: radial-gradient(circle, rgba(99, 225, 213, 0.62), rgba(12, 129, 129, 0) 64%);
   transform: scale(1.8);
   opacity: 0.58;
 }
 
 .map-dot::after {
   inset: 9px;
-  background: #fff6bd;
-  box-shadow: 0 0 10px rgba(255, 246, 189, 0.95);
+  background: #dffff8;
+  box-shadow: 0 0 10px rgba(120, 245, 230, 0.95);
 }
 
 .map-dot.is-active {
   animation: active-firefly 1800ms ease-in-out infinite;
+  background:
+    radial-gradient(circle at 48% 48%, rgba(235, 255, 217, 1) 0 13%, rgba(76, 218, 96, 0.98) 14% 31%, rgba(23, 142, 67, 0.86) 32% 47%, rgba(23, 142, 67, 0) 68%);
   transform: scale(1.35);
-  filter: drop-shadow(0 0 14px rgba(255, 196, 100, 0.95)) drop-shadow(0 0 22px rgba(83, 214, 154, 0.65));
+  filter: drop-shadow(0 0 14px rgba(95, 245, 116, 0.95)) drop-shadow(0 0 22px rgba(28, 176, 91, 0.65));
+}
+
+.map-dot.is-active::before {
+  background: radial-gradient(circle, rgba(93, 244, 120, 0.76), rgba(23, 142, 67, 0) 66%);
+}
+
+.map-dot.is-active::after {
+  background: #efffdf;
+  box-shadow: 0 0 12px rgba(210, 255, 186, 1);
 }
 
 .empty-state {
@@ -564,13 +579,15 @@ h1 {
   }
 
   .ambient-panel {
-    order: 2;
+    order: -1;
     position: relative;
     top: auto;
     min-height: 0;
-    grid-template-rows: auto auto minmax(190px, 30vh);
-    padding: 20px 0 0;
+    grid-template-rows: auto minmax(150px, 22vh);
+    gap: 10px;
+    padding: 12px 0 2px;
     border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
     border-left: 0;
   }
 
@@ -589,11 +606,11 @@ h1 {
   }
 
   .viewer-side {
-    grid-template-rows: auto auto minmax(210px, 30vh) auto;
+    grid-template-rows: auto auto minmax(180px, 26vh) auto;
   }
 
   .map-card {
-    min-height: 210px;
+    min-height: 180px;
   }
 }
 
@@ -613,7 +630,7 @@ h1 {
   }
 
   .page-shell {
-    gap: 22px;
+    gap: 16px;
     padding: 0 14px 32px;
   }
 
@@ -671,10 +688,15 @@ h1 {
 
   .viewer {
     padding: 12px;
+    grid-template-rows: minmax(0, 40vh) minmax(0, 1fr);
   }
 
   .viewer-photo-stage {
     border-radius: 5px;
+  }
+
+  .viewer-photo {
+    min-height: 40vh;
   }
 
   .viewer-info h2 {
@@ -684,15 +706,22 @@ h1 {
   .viewer-info {
     padding: 14px;
   }
-  }
 
   .ambient-panel {
-    gap: 12px;
-    padding-top: 16px;
+    gap: 8px;
+    padding-top: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 8;
+    margin: 0 -14px;
+    padding-right: 14px;
+    padding-left: 14px;
+    background: rgba(247, 244, 238, 0.94);
+    backdrop-filter: blur(8px);
   }
 
   .ambient-copy h2 {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .ambient-photo-wrap {
@@ -700,7 +729,7 @@ h1 {
   }
 
   .ambient-map-card {
-    min-height: 170px;
+    min-height: 150px;
   }
 }
 
@@ -723,10 +752,10 @@ h1 {
   }
 
   .viewer {
-    grid-template-rows: minmax(0, 45vh) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 38vh) minmax(0, 1fr);
   }
 
   .viewer-photo {
-    min-height: 45vh;
+    min-height: 38vh;
   }
 }
