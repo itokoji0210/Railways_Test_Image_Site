@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rail Photo Tiles</title>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <p class="kicker">Photo tiles / travel log</p>
+        <h1>Rail Photo Tiles</h1>
+        <p class="lead">鉄道写真を月・県・地域・ジャンルで眺める、軽いフォトログ。</p>
+      </div>
+
+      <div class="filter-bar" aria-label="写真フィルター">
+        <label>
+          <span>月</span>
+          <select id="monthFilter">
+            <option value="all">すべて</option>
+          </select>
+        </label>
+        <label>
+          <span>県</span>
+          <select id="prefectureFilter">
+            <option value="all">すべて</option>
+          </select>
+        </label>
+        <label>
+          <span>地域</span>
+          <select id="regionFilter">
+            <option value="all">すべて</option>
+          </select>
+        </label>
+        <label>
+          <span>ジャンル</span>
+          <select id="genreFilter">
+            <option value="all">すべて</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="gallery-section">
+        <div class="section-head">
+          <p id="resultCount">写真を読み込み中</p>
+          <button id="clearFilters" type="button">フィルター解除</button>
+        </div>
+        <div id="gallery" class="photo-grid" aria-live="polite"></div>
+      </section>
+
+      <aside class="ambient-panel" aria-label="連動プレビュー">
+        <div class="ambient-photo-wrap">
+          <img id="ambientImage" class="ambient-photo" src="" alt="">
+        </div>
+        <div class="ambient-copy">
+          <p id="ambientMeta" class="detail-meta"></p>
+          <h2 id="ambientTitle">写真を読み込み中</h2>
+        </div>
+        <div class="ambient-map-card">
+          <div id="ambientMap" aria-label="連動する撮影地点の地図"></div>
+        </div>
+      </aside>
+    </main>
+
+    <section id="viewer" class="viewer" aria-label="写真ビューアー" aria-hidden="true" inert>
+      <div class="viewer-photo-stage">
+        <img id="detailImage" class="viewer-photo" src="" alt="">
+      </div>
+
+      <div class="viewer-side">
+        <button id="closePanel" class="back-button" type="button">一覧に戻る</button>
+
+        <article class="viewer-info">
+          <p id="detailMeta" class="detail-meta"></p>
+          <h2 id="detailTitle">写真を選択</h2>
+          <p id="detailDescription">タイルをクリックすると、大きな写真と撮影地点のミニマップが表示されます。</p>
+        </article>
+
+        <div class="viewer-controls" aria-label="写真送り">
+          <button id="prevPhoto" type="button">前へ</button>
+          <button id="nextPhoto" type="button">次へ</button>
+        </div>
+
+        <div class="map-card">
+          <div id="viewerMap" aria-label="撮影地点の地図"></div>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
